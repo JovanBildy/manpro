@@ -4,6 +4,4 @@
     <string name="status_correct">CORRECT!</string>
     <string name="status_incorrect">INCORRECT!</string>
     <string name="status_empty">Click the red one first!</string>
-
-    <string name="condition">sedang stress</string>
 </resources>
