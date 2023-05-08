@@ -9,14 +9,19 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
+@Suppress("DEPRECATION")
 class MainActivity2 : AppCompatActivity() {
 
     private lateinit var buttons: Array<Button>
     private lateinit var infoText: TextView
+    private lateinit var coinText: TextView
+
     private var visibleBtn = mutableListOf<Int>()
     private var chosenBtnText = mutableListOf<Int>()
     private var chosenBtnId = mutableListOf<Int>()
+
     private var questionShown = 0
+    private var coins = 0
 
     @SuppressLint("DiscouragedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,12 +29,13 @@ class MainActivity2 : AppCompatActivity() {
         setContentView(R.layout.activity_main2)
 
         infoText = findViewById(R.id.infoText)
+        coinText = findViewById(R.id.coinText)
 
         buttons = Array(32) { index ->
             findViewById<Button>(resources.getIdentifier("button${index+1}", "id",
                 packageName)).apply {
                 setOnClickListener {
-                    // apply onClickListener on all buttons in array
+                    // Apply onClickListener on all buttons in array
                 }
             }
         }
@@ -43,8 +49,10 @@ class MainActivity2 : AppCompatActivity() {
         val handler = Handler()
         val runnable = object : Runnable {
             override fun run() {
-                if (questionShown <= 5) generateQuestion()
-                handler.postDelayed(this, 3000) // 5 seconds delay
+                if (questionShown <= 5) {
+                    generateQuestion()
+                    handler.postDelayed(this, 10000) // 10 secs delay
+                }
             }
         }
         handler.post(runnable)
@@ -73,6 +81,7 @@ class MainActivity2 : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showButton(id: Int, number: Int, type: String) {
         buttons[id].text = number.toString()
         buttons[id].visibility = View.VISIBLE
@@ -82,6 +91,7 @@ class MainActivity2 : AppCompatActivity() {
 
             buttons[id].setOnClickListener {
                 buttons[id].setBackgroundColor(Color.GRAY)
+                buttons[id].isEnabled = false
                 chosenBtnText.add(buttons[id].text.toString().toInt())
                 chosenBtnId.add(id)
                 if (infoText.text.isNullOrEmpty()) {
@@ -103,19 +113,22 @@ class MainActivity2 : AppCompatActivity() {
                     if (chosenBtnText.sum() == buttons[id].text.toString().toInt()) { // CORRECT
                         infoText.text = resources.getString(R.string.status_correct)
 
-                        // REMOVE BUTTONS FROM SCREEN
+                        // Remove all buttons from the screen
                         for (button_id in 0 until chosenBtnId.size) {
                             hideButton(chosenBtnId[button_id])
                         }
                         hideButton(id)
 
+                        coins += 10
+                        coinText.text = coins.toString()
                         questionShown -= 1
                     } else { // INCORRECT
                         infoText.text = resources.getString(R.string.status_incorrect)
 
-                        // RESET BUTTONS' STATE
+                        // Reset buttons' state
                         for (button_id in 0 until chosenBtnId.size) {
                             buttons[chosenBtnId[button_id]].setBackgroundColor(Color.RED)
+                            buttons[chosenBtnId[button_id]].isEnabled = true
                         }
                     }
                     chosenBtnText.clear()

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">GameBerhitung</string>
-    
+
     <string name="status_correct">CORRECT!</string>
     <string name="status_incorrect">INCORRECT!</string>
     <string name="status_empty">Click the red one first!</string>
