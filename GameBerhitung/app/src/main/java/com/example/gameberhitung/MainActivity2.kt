@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.daimajia.androidanimations.library.Techniques
+import com.daimajia.androidanimations.library.YoYo
 
 @Suppress("DEPRECATION")
 class MainActivity2 : AppCompatActivity() {
@@ -92,6 +94,11 @@ class MainActivity2 : AppCompatActivity() {
             buttons[id].setOnClickListener {
                 buttons[id].setBackgroundColor(Color.GRAY)
                 buttons[id].isEnabled = false
+                //click animation
+                YoYo.with(Techniques.BounceIn)
+                    .duration(700)
+                    .repeat(0)
+                    .playOn(buttons[id])
                 chosenBtnText.add(buttons[id].text.toString().toInt())
                 chosenBtnId.add(id)
                 if (infoText.text.isNullOrEmpty()) {
@@ -106,15 +113,36 @@ class MainActivity2 : AppCompatActivity() {
             buttons[id].setBackgroundColor(Color.BLUE)
 
             buttons[id].setOnClickListener {
+                //click animation
+                YoYo.with(Techniques.BounceIn)
+                    .duration(700)
+                    .repeat(0)
+                    .playOn(buttons[id])
 
                 if (chosenBtnText.isEmpty()) {
                     infoText.text = resources.getString(R.string.status_empty)
+                    //incorrect text animation
+                    YoYo.with(Techniques.Tada)
+                        .duration(700)
+                        .repeat(0)
+                        .playOn(infoText)
                 } else {
                     if (chosenBtnText.sum() == buttons[id].text.toString().toInt()) { // CORRECT
                         infoText.text = resources.getString(R.string.status_correct)
+                        //correct text animation
+                        YoYo.with(Techniques.RubberBand)
+                            .duration(700)
+                            .repeat(0)
+                            .playOn(infoText)
 
                         // Remove all buttons from the screen
                         for (button_id in 0 until chosenBtnId.size) {
+                            //click animation
+                            YoYo.with(Techniques.FadeOut)
+                                .duration(700)
+                                .repeat(0)
+                                .playOn(buttons[id])
+
                             hideButton(chosenBtnId[button_id])
                         }
                         hideButton(id)
@@ -124,6 +152,11 @@ class MainActivity2 : AppCompatActivity() {
                         questionShown -= 1
                     } else { // INCORRECT
                         infoText.text = resources.getString(R.string.status_incorrect)
+                        //incorrect text animation
+                        YoYo.with(Techniques.Tada)
+                            .duration(700)
+                            .repeat(0)
+                            .playOn(infoText)
 
                         // Reset buttons' state
                         for (button_id in 0 until chosenBtnId.size) {
