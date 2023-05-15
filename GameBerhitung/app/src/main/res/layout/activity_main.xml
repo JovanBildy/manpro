@@ -19,9 +19,8 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
+        android:src="@drawable/lightning"
         />
-<!--    android:src="@drawable/baseline_flash_on_24"-->
-<!--    Sementara ku comment, waktu ku jalanin muncul error, AAPT: error: resource drawable/baseline_flash_on_24 (aka com.example.gameberhitung:drawable/baseline_flash_on_24) not found.-->
 
     <TextView
         android:layout_width="match_parent"
