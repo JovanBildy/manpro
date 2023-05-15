@@ -1,6 +1,8 @@
 package com.example.gameberhitung
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -9,6 +11,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
@@ -98,6 +102,23 @@ class MainActivity2 : AppCompatActivity() {
                         buttons.forEach { button ->
                             button.visibility = View.INVISIBLE
                         }
+
+                        //KEMBALI KE MAIN MENU
+                        AlertDialog.Builder(this@MainActivity2)
+                            .setTitle("GAME OVER")
+                            .setMessage("Game telah berakhir, poin anda tersimpan!")
+                            .setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, which ->
+                                val intent = Intent(this@MainActivity2, MainActivity::class.java).apply {
+                                    putExtra(MainActivity.getData, coins.toString())
+                                }
+                                startActivity(intent)
+
+                                Toast.makeText(
+                                    this@MainActivity2,
+                                    "Kembali ke Main Menu",
+                                    Toast.LENGTH_SHORT).show()
+                            })
+                            .show()
                     } else {
                         handler.postDelayed(this, 1000)
                     }

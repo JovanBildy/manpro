@@ -107,6 +107,7 @@
            android:text="Your Coins:"/>
 
         <TextView
+            android:id="@+id/textCoin"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1"
