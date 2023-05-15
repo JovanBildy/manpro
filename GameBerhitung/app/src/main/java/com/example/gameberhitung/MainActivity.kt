@@ -1,10 +1,10 @@
 package com.example.gameberhitung
 
 import android.content.Intent
-import android.media.Image
+//import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+//import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 
