@@ -83,37 +83,41 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/coinShop"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="25dp"
         android:orientation="horizontal"
-        android:weightSum="3"
-        android:id="@+id/coinShop"
+        android:weightSum="5"
         tools:context=".MainActivity">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:src="@drawable/coin"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:src="@drawable/coin" />
 
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="fill_parent"
-           android:layout_weight="1"
-           android:gravity="center"
-           android:textStyle="bold"
-           android:textSize="20sp"
-           android:text="Your Coins:"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="Your Coins:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textCoin"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center"
-            android:textStyle="bold"
+            android:text="0"
+            android:textAlignment="center"
             android:textSize="20sp"
-            android:text="0"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
 <!--    <Button-->

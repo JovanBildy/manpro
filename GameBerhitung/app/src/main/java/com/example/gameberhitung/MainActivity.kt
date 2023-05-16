@@ -1,16 +1,13 @@
 package com.example.gameberhitung
 
-import android.content.DialogInterface
+import android.content.Context
 import android.content.Intent
-//import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-//import android.widget.Button
+//import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,25 +21,37 @@ class MainActivity : AppCompatActivity() {
         val clickCoinShop : LinearLayout = findViewById(R.id.coinShop)
         val txtCoin : TextView = findViewById(R.id.textCoin)
 
-        /*
-        kalo pertama kali main aku mau muncul nya "0" bukan "null"
-        tapi gatau pengecekannya yang bener gimana
+        // SHARED PREFERENCES
+        val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
 
-        tapi setelah main keluar kok poinnya
-         */
-        var coins : String = ""
-        coins = intent.getStringExtra(getData).toString()
-        if(coins.equals("")){
-            txtCoin.setText("0")
-        }else{
-            txtCoin.setText(coins)
+        val editorStart = sharedPreferences.edit()
+        if (sharedPreferences.contains("coins") &&
+            sharedPreferences.all["coins"] is String) {
+//            Log.d("cek123", "halo dunia")
+        } else {
+            editorStart.clear()
+            editorStart.putString("coins", "0")
+            editorStart.apply()
         }
 
-//        val btn2: Button = findViewById(R.id.button)
-//        val btn3: Button = findViewById(R.id.button34)
+        val currentCoins = sharedPreferences.getString("coins", "")?.toIntOrNull() ?: 0
+        val coinsEarned = intent.getStringExtra(getData)?.toIntOrNull() ?: 0
+
+        val totalCoins = currentCoins + coinsEarned
+
+//        Log.d("cek123", "currentCoins: $currentCoins")
+//        Log.d("cek123", "coinsEarned: $coinsEarned")
+
+        txtCoin.text = totalCoins.toString()
+
+        val editorEnd = sharedPreferences.edit()
+        editorEnd.putString("coins", totalCoins.toString())
+        editorEnd.apply()
 
         clickAdd.setOnClickListener {
-            val intent = Intent(this@MainActivity, MainActivity2::class.java)
+            val intent = Intent(this@MainActivity, MainActivity2::class.java).apply {
+                putExtra(MainActivity2.getCoins, totalCoins.toString())
+            }
             startActivity(intent)
         }
 
@@ -65,17 +74,9 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, MainActivity6::class.java)
             startActivity(intent)
         }
-//        btn2.setOnClickListener {
-//            val intent = Intent(this@MainActivity, TestValueAnimation::class.java)
-//            startActivity(intent)
-//        }
-
-//        btn3.setOnClickListener {
-//            val intent = Intent(this@MainActivity, TestBtnTimer::class.java)
-//            startActivity(intent)
-//        }
     }
+
     companion object {
-        const val getData = "Ambil"
+        const val getData = "Get coins earned after the game is over."
     }
 }

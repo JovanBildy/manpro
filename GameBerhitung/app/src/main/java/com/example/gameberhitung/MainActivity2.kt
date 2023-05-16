@@ -1,12 +1,12 @@
 package com.example.gameberhitung
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+//import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -30,8 +30,12 @@ class MainActivity2 : AppCompatActivity() {
     private var chosenBtnText = mutableListOf<Int>()
     private var chosenBtnId = mutableListOf<Int>()
 
-    private var coins = 0
+    private var coinsEarned = 0
+    private var coinsMainMenu = 0
     private var gameOver = false
+
+    // NEW MECHANIC
+    private val buttonQuestions = mutableListOf<Int>()
 
     // TIMER VARIABLES
     private var totalDuration: Double = 30000.00 // Total duration in milliseconds (30 secs)
@@ -50,6 +54,8 @@ class MainActivity2 : AppCompatActivity() {
         infoText = findViewById(R.id.infoText)
         coinText = findViewById(R.id.coinText)
 
+        coinsMainMenu = intent.getStringExtra(getCoins)?.toIntOrNull() ?: 0
+
         // TIMERS
         timers = Array(32) { index ->
             findViewById(resources.getIdentifier("progressBar${index + 1}", "id",
@@ -60,12 +66,18 @@ class MainActivity2 : AppCompatActivity() {
                 override fun onTick(millisUntilFinished: Long) {
                     val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
                     timers[index].progress = progress
+
+//                    Log.d("cek123", "progress: $progress")
                 }
 
                 override fun onFinish() {
                     timers[index].progress = 0
                     if (timers[index].visibility == View.VISIBLE) {
+                        countDownTimers.forEach { timer ->
+                            timer.cancel()
+                        }
                         gameOver = true
+                        gameOverDialog()
                     }
                 }
             }
@@ -73,8 +85,8 @@ class MainActivity2 : AppCompatActivity() {
         timers.forEach { timer ->
             timer.visibility = View.INVISIBLE
         }
-        //
 
+        // PREPARE BUTTONS
         buttons = Array(32) { index ->
             findViewById<Button>(resources.getIdentifier("button${index+1}", "id",
                 packageName)).apply {
@@ -87,54 +99,47 @@ class MainActivity2 : AppCompatActivity() {
             button.visibility = View.INVISIBLE
         }
 
-        // SPAWN RATE
+        // SPAWNERS
         val handler = Handler()
         val runnable = object : Runnable {
             override fun run() {
-                if (questionShown <= 5) {
-                    generateQuestion()
-                    handler.postDelayed(this, spawnRate.toLong())
-                } else {
-                    if (gameOver) {
-                        timers.forEach { timer ->
-                            timer.visibility = View.INVISIBLE
-                        }
-                        buttons.forEach { button ->
-                            button.visibility = View.INVISIBLE
-                        }
-
-                        //KEMBALI KE MAIN MENU
-                        AlertDialog.Builder(this@MainActivity2)
-                            .setTitle("GAME OVER")
-                            .setMessage("Game telah berakhir, poin anda tersimpan!")
-                            .setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, which ->
-                                val intent = Intent(this@MainActivity2, MainActivity::class.java).apply {
-                                    putExtra(MainActivity.getData, coins.toString())
-                                }
-                                startActivity(intent)
-
-                                Toast.makeText(
-                                    this@MainActivity2,
-                                    "Kembali ke Main Menu",
-                                    Toast.LENGTH_SHORT).show()
-                            })
-                            .show()
-                    } else {
-                        handler.postDelayed(this, 1000)
+                if (!gameOver) {
+                    if (questionShown <= 0) {
+                        generateQuestion()
+                        generateQuestion()
+                        handler.postDelayed(this, spawnRate.toLong())
+                    } else if (questionShown <= 5) {
+                        generateQuestion()
+                        handler.postDelayed(this, spawnRate.toLong())
                     }
                 }
             }
         }
         handler.post(runnable)
-        //
     }
 
     private fun generateQuestion() {
         questionShown += 1
-
         val question = IntArray(3)
-        question[0] = (1..10).random()
-        question[1] = (1..10).random()
+
+        if (buttonQuestions.size < 6) {
+            question[0] = (1..10).random()
+            question[1] = (1..10).random()
+
+            buttonQuestions.add(question[0])
+            buttonQuestions.add(question[1])
+        } else {
+            val numbers = buttonQuestions
+
+            var randomIndex: Int = (0 until numbers.size).random()
+            var randomElement: Int = numbers.removeAt(randomIndex)
+            question[0] = randomElement
+
+            randomIndex = (0 until numbers.size).random()
+            randomElement = numbers.removeAt(randomIndex)
+            question[1] = randomElement
+        }
+
         question[2] = question[0] + question[1]
 
         for (i in 0..2) {
@@ -150,6 +155,7 @@ class MainActivity2 : AppCompatActivity() {
                 2 -> showButton(randomNumber, question[2], "Answer")
             }
         }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -158,6 +164,7 @@ class MainActivity2 : AppCompatActivity() {
         buttons[id].visibility = View.VISIBLE
 
         if (type == "Question") {
+            buttons[id].tag = 3
             buttons[id].setBackgroundColor(Color.RED)
 
             buttons[id].setOnClickListener {
@@ -172,13 +179,16 @@ class MainActivity2 : AppCompatActivity() {
                 chosenBtnId.add(id)
                 if (infoText.text.isNullOrEmpty()) {
                     infoText.append(buttons[id].text.toString())
-                } else if (infoText.text.toString() == resources.getString(R.string.status_incorrect) || infoText.text.toString() == resources.getString(R.string.status_correct) || infoText.text.toString() == resources.getString(R.string.status_empty)) {
+                } else if (infoText.text.toString() == resources.getString(R.string.status_incorrect) ||
+                        infoText.text.toString() == resources.getString(R.string.status_correct) ||
+                        infoText.text.toString() == resources.getString(R.string.status_empty)) {
                     infoText.text = buttons[id].text.toString()
                 } else {
                     infoText.append(" + " + buttons[id].text.toString())
                 }
             }
         } else if (type == "Answer") {
+            buttons[id].tag = 1
             buttons[id].setBackgroundColor(Color.BLUE)
 
             timers[id].visibility = View.VISIBLE
@@ -209,7 +219,7 @@ class MainActivity2 : AppCompatActivity() {
 
                         // Remove all buttons from the screen
                         for (button_id in 0 until chosenBtnId.size) {
-                            //click animation
+                            // Click animation
                             YoYo.with(Techniques.FadeOut)
                                 .duration(700)
                                 .repeat(0)
@@ -219,8 +229,8 @@ class MainActivity2 : AppCompatActivity() {
                         }
                         hideButton(id)
 
-                        coins += 10
-                        coinText.text = coins.toString()
+                        coinsEarned += 10
+                        coinText.text = coinsEarned.toString()
                         questionShown -= 1
                         answered += 1
 
@@ -255,7 +265,64 @@ class MainActivity2 : AppCompatActivity() {
         timers[id].visibility = View.INVISIBLE
         countDownTimers[id].cancel()
 
-        buttons[id].visibility = View.INVISIBLE
-        buttons[id].text = ""
+        val storedInteger = buttons[id].tag as? Int
+        val result = storedInteger?.minus(1)
+        buttons[id].tag = result
+
+        var buttonColor: Int = Color.WHITE
+
+        when (buttons[id].tag) {
+            0 -> {
+                val strBtn = buttons[id].text.toString()
+                val intVal = strBtn.toInt()
+
+                val index = buttonQuestions.indexOfFirst { it == intVal }
+                if (index != -1) {
+                    buttonQuestions.removeAt(index)
+                }
+
+                buttons[id].visibility = View.INVISIBLE
+                buttons[id].text = ""
+            }
+            1 -> buttonColor = Color.rgb(255, 192, 203)
+            2 -> buttonColor = Color.rgb(220, 120, 120)
+        }
+
+
+        buttons[id].setBackgroundColor(buttonColor)
+//        buttons[id].setBackgroundColor(Color.RED)
+        buttons[id].isEnabled = true
+
+
+    }
+
+    private fun gameOverDialog() {
+        val totalCoins = coinsEarned + coinsMainMenu
+
+        AlertDialog.Builder(this@MainActivity2)
+            .setTitle("GAME OVER")
+            .setMessage("Coins Earned: $coinsEarned" +
+                    "\nTotal Coins: $totalCoins")
+            .setPositiveButton("OK") { _, _ ->
+                val intent =
+                    Intent(this@MainActivity2, MainActivity::class.java).apply {
+                        putExtra(
+                            MainActivity.getData,
+                            coinsEarned.toString()
+                        )
+                    }
+                startActivity(intent)
+
+                Toast.makeText(
+                    this@MainActivity2,
+                    "Back to Main Menu",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .show()
+    }
+
+    companion object {
+        const val getCoins = "Get total coins from main menu."
     }
 }
