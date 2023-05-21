@@ -13,19 +13,19 @@
         android:theme="@style/Theme.GameBerhitung"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity6"
+            android:name=".Shop"
             android:exported="false" />
         <activity
-            android:name=".MainActivity5"
+            android:name=".Pembagian"
             android:exported="false" />
         <activity
-            android:name=".MainActivity4"
+            android:name=".Perkalian"
             android:exported="false" />
         <activity
-            android:name=".MainActivity3"
+            android:name=".Pengurangan"
             android:exported="false" />
         <activity
-            android:name=".MainActivity2"
+            android:name=".Penjumlahan"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -10,7 +10,7 @@
     android:layout_marginRight="25dp"
     android:layout_marginBottom="25dp"
     android:orientation="vertical"
-    tools:context=".MainActivity4">
+    tools:context=".Perkalian">
 
     <!-- LAYOUT SCORE -->
     <LinearLayout
@@ -18,7 +18,7 @@
         android:layout_height="50dp"
         android:layout_weight="1"
         android:orientation="horizontal"
-        tools:context=".MainActivity4">
+        tools:context=".Perkalian">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -37,14 +37,15 @@
 
         <TextView
             android:id="@+id/coinText"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             android:gravity="center"
             android:text="0"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

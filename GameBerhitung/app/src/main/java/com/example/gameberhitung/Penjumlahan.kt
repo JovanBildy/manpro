@@ -1,11 +1,15 @@
 package com.example.gameberhitung
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.TypedValue
 //import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -18,7 +22,7 @@ import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
 @Suppress("DEPRECATION")
-class MainActivity2 : AppCompatActivity() {
+class Penjumlahan : AppCompatActivity() {
 
     private lateinit var buttons: Array<Button>
     private lateinit var timers: Array<ProgressBar>
@@ -46,10 +50,10 @@ class MainActivity2 : AppCompatActivity() {
     private var answered = 0
     private var spawnRate: Double = 5000.00 // Initial spawn rate 5 seconds
 
-    @SuppressLint("DiscouragedApi")
+    @SuppressLint("DiscouragedApi", "Recycle", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.penjumlahan)
 
         infoText = findViewById(R.id.infoText)
         coinText = findViewById(R.id.coinText)
@@ -116,11 +120,35 @@ class MainActivity2 : AppCompatActivity() {
             }
         }
         handler.post(runnable)
+
+        // GAME PAUSE (masih belum selesai)
+//        val pauseButton: Button = findViewById(R.id.pauseButton)
+//        val dialog = Dialog(this)
+//
+//        pauseButton.setOnClickListener {
+//            // Create and set the custom layout for the dialog
+//            dialog.setContentView(R.layout.dialog_pause)
+//
+//            // Set the title and message of the dialog
+//            val titleTextView: TextView = dialog.findViewById(R.id.pauseTitle)
+//            val messageTextView: TextView = dialog.findViewById(R.id.pauseMessage)
+//            titleTextView.text = "Pause"
+//            messageTextView.text = "Game Paused"
+//
+//            // Set any other customizations or interactions for the dialog
+//
+//            // Show the dialog
+//            dialog.show()
+//        }
     }
 
-    private fun generateQuestion() {
+    private fun generateQuestion() { // CHANGE LOGIC HERE
+//        Log.d("cek123", "$buttonQuestions")
+//        Log.d("cek123", "${buttonQuestions.size}")
+
         questionShown += 1
         val question = IntArray(3)
+        val isTooMuch: Boolean
 
         if (buttonQuestions.size < 6) {
             question[0] = (1..10).random()
@@ -128,8 +156,11 @@ class MainActivity2 : AppCompatActivity() {
 
             buttonQuestions.add(question[0])
             buttonQuestions.add(question[1])
+
+            isTooMuch = false
         } else {
-            val numbers = buttonQuestions
+            val temp = buttonQuestions.toMutableList()
+            val numbers = temp.toMutableList()
 
             var randomIndex: Int = (0 until numbers.size).random()
             var randomElement: Int = numbers.removeAt(randomIndex)
@@ -138,9 +169,12 @@ class MainActivity2 : AppCompatActivity() {
             randomIndex = (0 until numbers.size).random()
             randomElement = numbers.removeAt(randomIndex)
             question[1] = randomElement
+
+            isTooMuch = true
         }
 
         question[2] = question[0] + question[1]
+
 
         for (i in 0..2) {
             var randomNumber = (0..31).random()
@@ -149,13 +183,15 @@ class MainActivity2 : AppCompatActivity() {
             }
             visibleBtn.add(randomNumber)
 
-            when (i) {
-                0 -> showButton(randomNumber, question[0], "Question")
-                1 -> showButton(randomNumber, question[1], "Question")
-                2 -> showButton(randomNumber, question[2], "Answer")
+            if (!isTooMuch) {
+                when (i) {
+                    0 -> showButton(randomNumber, question[0], "Question")
+                    1 -> showButton(randomNumber, question[1], "Question")
+                }
             }
-        }
 
+            if (i == 2 ) showButton(randomNumber, question[2], "Answer")
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -208,7 +244,7 @@ class MainActivity2 : AppCompatActivity() {
                         .duration(700)
                         .repeat(0)
                         .playOn(infoText)
-                } else {
+                } else { // CHANGE LOGIC HERE
                     if (chosenBtnText.sum() == buttons[id].text.toString().toInt()) { // CORRECT
                         infoText.text = resources.getString(R.string.status_correct)
                         // Correct text animation
@@ -230,7 +266,8 @@ class MainActivity2 : AppCompatActivity() {
                         hideButton(id)
 
                         coinsEarned += 10
-                        coinText.text = coinsEarned.toString()
+                        numberAnimation(coinText, coinsEarned - 10, coinsEarned)
+//                        coinText.text = coinsEarned.toString()
                         questionShown -= 1
                         answered += 1
 
@@ -299,13 +336,13 @@ class MainActivity2 : AppCompatActivity() {
     private fun gameOverDialog() {
         val totalCoins = coinsEarned + coinsMainMenu
 
-        AlertDialog.Builder(this@MainActivity2)
+        AlertDialog.Builder(this@Penjumlahan)
             .setTitle("GAME OVER")
             .setMessage("Coins Earned: $coinsEarned" +
                     "\nTotal Coins: $totalCoins")
             .setPositiveButton("OK") { _, _ ->
                 val intent =
-                    Intent(this@MainActivity2, MainActivity::class.java).apply {
+                    Intent(this@Penjumlahan, MainActivity::class.java).apply {
                         putExtra(
                             MainActivity.getData,
                             coinsEarned.toString()
@@ -314,12 +351,54 @@ class MainActivity2 : AppCompatActivity() {
                 startActivity(intent)
 
                 Toast.makeText(
-                    this@MainActivity2,
+                    this@Penjumlahan,
                     "Back to Main Menu",
                     Toast.LENGTH_SHORT
                 ).show()
             }
             .show()
+    }
+
+    private fun numberAnimation(textViewKu: TextView, start: Int, end: Int) {
+        // NUMBER ANIMATION
+        val valueAnimator = ValueAnimator.ofInt(start, end)
+        valueAnimator.duration = 500
+
+        val initialFontSize = textViewKu.textSize // Store the initial font size
+
+        valueAnimator.addUpdateListener { animator ->
+            val animatedValue = animator.animatedValue as Int
+            textViewKu.text = animatedValue.toString()
+
+            val scale = animatedValue.toFloat() / 100.0f
+
+            // Decrease the font size after reaching halfway point of the animation
+            val fontSize: Float = if (scale >= 0.5f) {
+                val scaleDown = (1.0f - scale) * 2.0f
+                initialFontSize + (scaleDown * 25.0f)
+            } else {
+                initialFontSize + (scale * 25.0f)
+            }
+
+            textViewKu.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
+        }
+
+        valueAnimator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {
+                // Animation started, increase the font size
+                textViewKu.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialFontSize + 20.0f)
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                // Animation ended, revert the font size back to normal
+                textViewKu.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialFontSize)
+            }
+
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+
+        valueAnimator.start()
     }
 
     companion object {

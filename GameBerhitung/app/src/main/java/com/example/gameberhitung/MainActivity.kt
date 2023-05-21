@@ -49,29 +49,29 @@ class MainActivity : AppCompatActivity() {
         editorEnd.apply()
 
         clickAdd.setOnClickListener {
-            val intent = Intent(this@MainActivity, MainActivity2::class.java).apply {
-                putExtra(MainActivity2.getCoins, totalCoins.toString())
+            val intent = Intent(this@MainActivity, Penjumlahan::class.java).apply {
+                putExtra(Penjumlahan.getCoins, totalCoins.toString())
             }
             startActivity(intent)
         }
 
         clickMin.setOnClickListener {
-            val intent = Intent(this@MainActivity, MainActivity3::class.java)
+            val intent = Intent(this@MainActivity, Pengurangan::class.java)
             startActivity(intent)
         }
 
         clickTimes.setOnClickListener {
-            val intent = Intent(this@MainActivity, MainActivity4::class.java)
+            val intent = Intent(this@MainActivity, Perkalian::class.java)
             startActivity(intent)
         }
 
         clickDivide.setOnClickListener {
-            val intent = Intent(this@MainActivity, MainActivity5::class.java)
+            val intent = Intent(this@MainActivity, Pembagian::class.java)
             startActivity(intent)
         }
 
         clickCoinShop.setOnClickListener {
-            val intent = Intent(this@MainActivity, MainActivity6::class.java)
+            val intent = Intent(this@MainActivity, Shop::class.java)
             startActivity(intent)
         }
     }
