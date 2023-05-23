@@ -176,6 +176,7 @@ class Perkalian : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun showButton(id: Int, number: Int, type: String) {
         buttons[id].text = number.toString()
+        buttons[id].textSize = 10f
         buttons[id].visibility = View.VISIBLE
 
         if (type == "Question") {
