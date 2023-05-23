@@ -199,7 +199,7 @@ class Perkalian : AppCompatActivity() {
                     infoText.text.toString() == resources.getString(R.string.status_empty)) {
                     infoText.text = buttons[id].text.toString()
                 } else {
-                    infoText.append(" + " + buttons[id].text.toString())
+                    infoText.append(" * " + buttons[id].text.toString())
                 }
             }
         } else if (type == "Answer") {

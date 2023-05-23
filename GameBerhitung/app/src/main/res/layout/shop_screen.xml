@@ -1,14 +1,503 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Shop"
-    android:orientation="vertical">
+    tools:context=".Shop">
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/teksstore"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Buat tukar coin"/>
-</LinearLayout>
+        android:fontFamily="@font/oswald_bold"
+        android:text="STORE"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textSize="35dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.047" />
+
+    <TextView
+        android:id="@+id/uangdiamond"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/oswald_bold"
+        android:text="543"
+        android:textColor="#000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.828"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022" />
+
+    <ImageView
+        android:id="@+id/diamond"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_baseline_diamond_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <TextView
+        android:id="@+id/uangkoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/oswald_bold"
+        android:text="1000"
+        android:textColor="#000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.824"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.08" />
+
+    <ImageView
+        android:id="@+id/koin"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_baseline_attach_money_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.081" />
+
+    <TextView
+        android:id="@+id/square"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/square"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/teksstore" />
+
+    <TextView
+        android:id="@+id/teksbutton"
+        android:layout_width="110dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/oswald"
+        android:text="BUTTON"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@id/square"
+        app:layout_constraintTop_toTopOf="@id/square" />
+
+    <TextView
+        android:id="@+id/square1"
+        android:layout_width="110dp"
+        android:layout_height="230dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/square1"
+        app:layout_constraintEnd_toEndOf="@id/square"
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toStartOf="@id/square"
+        app:layout_constraintTop_toTopOf="@id/square" />
+
+    <TextView
+        android:id="@+id/square2"
+        android:layout_width="110dp"
+        android:layout_height="230dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/square1"
+        app:layout_constraintEnd_toEndOf="@id/square"
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="@id/square"
+        app:layout_constraintTop_toTopOf="@id/square" />
+
+    <TextView
+        android:id="@+id/square3"
+        android:layout_width="110dp"
+        android:layout_height="230dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/square1"
+        app:layout_constraintEnd_toEndOf="@id/square"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@id/square"
+        app:layout_constraintTop_toTopOf="@id/square" />
+
+    <ImageView
+        android:id="@+id/buttonbaru1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/buttonbaru1"
+        app:layout_constraintBottom_toBottomOf="@id/square1"
+        app:layout_constraintEnd_toEndOf="@id/square1"
+        app:layout_constraintHorizontal_bias="0.645"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/square1"
+        app:layout_constraintVertical_bias="0.34" />
+
+    <TextView
+        android:id="@+id/square4"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/square2"
+        app:layout_constraintEnd_toEndOf="@id/square1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/square1"
+        app:layout_constraintTop_toTopOf="@id/square1" />
+
+    <TextView
+        android:id="@+id/teksbuy1"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:text="300"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square4"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/square4"
+        app:layout_constraintTop_toTopOf="@id/square4" />
+
+    <ImageView
+        android:id="@+id/buttonbaru2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/buttonbaru3"
+        app:layout_constraintBottom_toBottomOf="@id/square2"
+        app:layout_constraintEnd_toEndOf="@id/square2"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="@id/square2"
+        app:layout_constraintTop_toTopOf="@id/square2"
+        app:layout_constraintVertical_bias="0.34" />
+
+    <TextView
+        android:id="@+id/square5"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/square2"
+        app:layout_constraintEnd_toEndOf="@id/square2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/square2"
+        app:layout_constraintTop_toTopOf="@id/square2" />
+
+    <TextView
+        android:id="@+id/teksbuy2"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:text="1000"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square5"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/square5"
+        app:layout_constraintTop_toTopOf="@id/square5" />
+
+    <ImageView
+        android:id="@+id/buttonbaru3"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/buttonbaru5"
+        app:layout_constraintBottom_toBottomOf="@id/square3"
+        app:layout_constraintEnd_toEndOf="@id/square3"
+        app:layout_constraintStart_toStartOf="@id/square3"
+        app:layout_constraintTop_toTopOf="@id/square3"
+        app:layout_constraintVertical_bias="0.34" />
+
+    <TextView
+        android:id="@+id/square6"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/square2"
+        app:layout_constraintEnd_toEndOf="@id/square3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/square3"
+        app:layout_constraintTop_toTopOf="@id/square3" />
+
+    <TextView
+        android:id="@+id/teksbuy3"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:text="500"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square6"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@id/square6"
+        app:layout_constraintTop_toTopOf="@id/square6" />
+
+    <ImageView
+        android:id="@+id/uangkoin1"
+        android:layout_width="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_baseline_attach_money_24"
+        app:layout_constraintBottom_toBottomOf="@id/square4"
+        app:layout_constraintEnd_toEndOf="@id/square4"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@id/square4"
+        app:layout_constraintTop_toTopOf="@id/square4"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <ImageView
+        android:id="@+id/uangkoin2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/ic_baseline_attach_money_24"
+        app:layout_constraintBottom_toBottomOf="@id/square5"
+        app:layout_constraintEnd_toEndOf="@id/square5"
+        app:layout_constraintHorizontal_bias="0.866"
+        app:layout_constraintStart_toStartOf="@id/square5"
+        app:layout_constraintTop_toTopOf="@id/square5"
+        app:layout_constraintVertical_bias="0.375" />
+
+    <ImageView
+        android:id="@+id/uangkoin3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/ic_baseline_attach_money_24"
+        app:layout_constraintBottom_toBottomOf="@id/square6"
+        app:layout_constraintEnd_toEndOf="@id/square6"
+        app:layout_constraintHorizontal_bias="0.916"
+        app:layout_constraintStart_toStartOf="@id/square6"
+        app:layout_constraintTop_toTopOf="@id/square6"
+        app:layout_constraintVertical_bias="0.375" />
+
+
+    <TextView
+        android:id="@+id/square7"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/square3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/square" />
+
+    <TextView
+        android:id="@+id/teksbutton1"
+        android:layout_width="110dp"
+        android:layout_height="30dp"
+        android:fontFamily="@font/oswald_bold"
+        android:text="COINS"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square7"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@id/square7"
+        app:layout_constraintTop_toTopOf="@id/square7" />
+
+    <TextView
+        android:id="@+id/square8"
+        android:layout_width="110dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/square1"
+        app:layout_constraintEnd_toEndOf="@id/square7"
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toStartOf="@id/square7"
+        app:layout_constraintTop_toTopOf="@id/square7" />
+
+    <TextView
+        android:id="@+id/square9"
+        android:layout_width="110dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/square1"
+        app:layout_constraintEnd_toEndOf="@id/square7"
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="@id/square7"
+        app:layout_constraintTop_toTopOf="@id/square7" />
+
+    <TextView
+        android:id="@+id/square10"
+        android:layout_width="110dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/square1"
+        app:layout_constraintEnd_toEndOf="@id/square7"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@id/square7"
+        app:layout_constraintTop_toTopOf="@id/square7" />
+
+    <ImageView
+        android:id="@+id/koin1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/koin1"
+        app:layout_constraintBottom_toBottomOf="@id/square8"
+        app:layout_constraintEnd_toEndOf="@id/square8"
+        app:layout_constraintStart_toStartOf="@id/square8"
+        app:layout_constraintTop_toTopOf="@id/square8"
+        app:layout_constraintVertical_bias="0.33" />
+
+    <ImageView
+        android:id="@+id/koin2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/koin2"
+        app:layout_constraintBottom_toBottomOf="@id/square10"
+        app:layout_constraintEnd_toEndOf="@id/square10"
+        app:layout_constraintStart_toStartOf="@id/square10"
+        app:layout_constraintTop_toTopOf="@id/square10"
+        app:layout_constraintVertical_bias="0.33" />
+
+    <ImageView
+        android:id="@+id/koin3"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/koin3"
+        app:layout_constraintBottom_toBottomOf="@id/square9"
+        app:layout_constraintEnd_toEndOf="@id/square9"
+        app:layout_constraintStart_toStartOf="@id/square9"
+        app:layout_constraintTop_toTopOf="@id/square9"
+        app:layout_constraintVertical_bias="0.33" />
+
+    <TextView
+        android:id="@+id/square11"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="104dp"
+        android:background="@drawable/square4"
+        app:layout_constraintEnd_toEndOf="@id/square8"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toStartOf="@id/square8"
+        app:layout_constraintTop_toTopOf="@id/square8" />
+
+    <TextView
+        android:id="@+id/square12"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="104dp"
+        android:background="@drawable/square4"
+        app:layout_constraintEnd_toEndOf="@id/square10"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toStartOf="@id/square10"
+        app:layout_constraintTop_toTopOf="@id/square10" />
+
+    <TextView
+        android:id="@+id/square13"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="104dp"
+        android:background="@drawable/square4"
+        app:layout_constraintEnd_toEndOf="@id/square9"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toStartOf="@id/square9"
+        app:layout_constraintTop_toTopOf="@id/square9" />
+
+    <TextView
+        android:id="@+id/teksbuydiamond1"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:text="25"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square11"
+        app:layout_constraintHorizontal_bias="0.687"
+        app:layout_constraintStart_toStartOf="@id/square11"
+        app:layout_constraintTop_toTopOf="@id/square11" />
+
+    <TextView
+        android:id="@+id/teksbuydiamond2"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:text="200"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square12"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@id/square12"
+        app:layout_constraintTop_toTopOf="@id/square12" />
+
+    <TextView
+        android:id="@+id/teksbuydiamond3"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:text="500"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/square13"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@id/square13"
+        app:layout_constraintTop_toTopOf="@id/square13" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#FF993366"
+        android:text="CLOSE"
+        app:layout_constraintTop_toBottomOf="@id/square7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/diamond1"
+        android:layout_width="20dp"
+        android:layout_marginTop="2dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_baseline_diamond_24"
+        app:layout_constraintBottom_toBottomOf="@id/square11"
+        app:layout_constraintEnd_toEndOf="@id/square11"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@id/square11"
+        app:layout_constraintTop_toTopOf="@id/square11"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <ImageView
+        android:id="@+id/diamond2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/ic_baseline_diamond_24"
+        app:layout_constraintBottom_toBottomOf="@id/square12"
+        app:layout_constraintEnd_toEndOf="@id/square12"
+        app:layout_constraintHorizontal_bias="0.866"
+        app:layout_constraintStart_toStartOf="@id/square12"
+        app:layout_constraintTop_toTopOf="@id/square12"
+        app:layout_constraintVertical_bias="0.375" />
+
+    <ImageView
+        android:id="@+id/diamond3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/ic_baseline_diamond_24"
+        app:layout_constraintBottom_toBottomOf="@id/square13"
+        app:layout_constraintEnd_toEndOf="@id/square13"
+        app:layout_constraintHorizontal_bias="0.916"
+        app:layout_constraintStart_toStartOf="@id/square13"
+        app:layout_constraintTop_toTopOf="@id/square13"
+        app:layout_constraintVertical_bias="0.375" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
