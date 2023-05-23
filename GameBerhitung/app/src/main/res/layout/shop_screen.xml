@@ -454,12 +454,13 @@
     <Button
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:layout_marginTop="200dp"
         android:backgroundTint="#FF993366"
         android:text="CLOSE"
-        app:layout_constraintTop_toBottomOf="@id/square7"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/square1" />
 
 <!--    <ImageView-->
 <!--        android:id="@+id/diamond1"-->
