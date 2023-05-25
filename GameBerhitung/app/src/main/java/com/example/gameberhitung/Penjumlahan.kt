@@ -3,7 +3,7 @@ package com.example.gameberhitung
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Dialog
+//import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle

@@ -25,12 +25,15 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
 
         val editorStart = sharedPreferences.edit()
-        if (sharedPreferences.contains("coins") &&
-            sharedPreferences.all["coins"] is String) {
-//            Log.d("cek123", "halo dunia")
-        } else {
+        if (!sharedPreferences.contains("coins") || sharedPreferences.all["coins"] !is String) {
             editorStart.clear()
             editorStart.putString("coins", "0")
+            editorStart.apply()
+        }
+
+        if (!sharedPreferences.contains("equipment") || sharedPreferences.all["equipment"] !is String) {
+            editorStart.clear()
+            editorStart.putString("equipment", "default")
             editorStart.apply()
         }
 
@@ -56,17 +59,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         clickMin.setOnClickListener {
-            val intent = Intent(this@MainActivity, Pengurangan::class.java)
+            val intent = Intent(this@MainActivity, Pengurangan::class.java).apply {
+                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            }
             startActivity(intent)
         }
 
         clickTimes.setOnClickListener {
-            val intent = Intent(this@MainActivity, Perkalian::class.java)
+            val intent = Intent(this@MainActivity, Perkalian::class.java).apply {
+                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            }
             startActivity(intent)
         }
 
         clickDivide.setOnClickListener {
-            val intent = Intent(this@MainActivity, Pembagian::class.java)
+            val intent = Intent(this@MainActivity, Pembagian::class.java).apply {
+                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            }
             startActivity(intent)
         }
 
