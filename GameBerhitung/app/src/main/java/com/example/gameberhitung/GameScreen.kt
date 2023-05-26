@@ -3,13 +3,14 @@ package com.example.gameberhitung
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.util.Log
 import android.util.TypedValue
-//import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -17,13 +18,15 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
 @Suppress("DEPRECATION")
-class Pengurangan : AppCompatActivity() {
+class GameScreen : AppCompatActivity() {
 
     private lateinit var buttons: Array<Button>
+//    private lateinit var imageButtons: Array<ImageButton>
     private lateinit var timers: Array<ProgressBar>
     private lateinit var countDownTimers: Array<CountDownTimer>
     private lateinit var infoText: TextView
@@ -49,58 +52,20 @@ class Pengurangan : AppCompatActivity() {
     private var answered = 0
     private var spawnRate: Double = 5000.00 // Initial spawn rate 5 seconds
 
-    @SuppressLint("DiscouragedApi", "Recycle")
+    @SuppressLint("DiscouragedApi", "Recycle", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.penjumlahan)
+        setContentView(R.layout.game_screen)
 
         infoText = findViewById(R.id.infoText)
         coinText = findViewById(R.id.coinText)
-
         coinsMainMenu = intent.getStringExtra(getCoins)?.toIntOrNull() ?: 0
 
         // TIMERS
-        timers = Array(32) { index ->
-            findViewById(resources.getIdentifier("progressBar${index + 1}", "id",
-                packageName))
-        }
-        countDownTimers = Array(timers.size) { index ->
-            object : CountDownTimer(totalDuration.toLong(), updateInterval) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
-                    timers[index].progress = progress
+        prepareTimers()
 
-//                    Log.d("cek123", "progress: $progress")
-                }
-
-                override fun onFinish() {
-                    timers[index].progress = 0
-                    if (timers[index].visibility == View.VISIBLE) {
-                        countDownTimers.forEach { timer ->
-                            timer.cancel()
-                        }
-                        gameOver = true
-                        gameOverDialog()
-                    }
-                }
-            }
-        }
-        timers.forEach { timer ->
-            timer.visibility = View.INVISIBLE
-        }
-
-        // PREPARE BUTTONS
-        buttons = Array(32) { index ->
-            findViewById<Button>(resources.getIdentifier("button${index+1}", "id",
-                packageName)).apply {
-                setOnClickListener {
-                    // Apply onClickListener on all buttons in array
-                }
-            }
-        }
-        buttons.forEach { button ->
-            button.visibility = View.INVISIBLE
-        }
+        // BUTTONS
+        prepareButtons()
 
         // SPAWNERS
         val handler = Handler()
@@ -121,39 +86,175 @@ class Pengurangan : AppCompatActivity() {
         handler.post(runnable)
     }
 
-    private fun generateQuestion() { // CHANGE LOGIC HERE
-//        Log.d("cek123", "$buttonQuestions")
-//        Log.d("cek123", "${buttonQuestions.size}")
+    @SuppressLint("DiscouragedApi")
+    private fun prepareButtons() {
+        buttons = Array(32) { index ->
+            findViewById<Button>(resources.getIdentifier(
+                "button${index+1}", "id", packageName)).apply {
+                setOnClickListener { }
+                visibility = View.INVISIBLE
+            }
+        }
 
+//        imageButtons = Array(32) { index ->
+//            findViewById<ImageButton>(resources.getIdentifier(
+//                "imageButton${index + 1}", "id", packageName)).apply {
+//                setOnClickListener { }
+//                setBackgroundResource(R.drawable.button1_blue)
+//                visibility = View.VISIBLE
+//            }
+//        }
+    }
+
+    @SuppressLint("DiscouragedApi")
+    private fun prepareTimers() {
+        timers = Array(32) { index ->
+            findViewById(resources.getIdentifier("progressBar${index + 1}", "id",
+                packageName))
+        }
+        countDownTimers = Array(timers.size) { index ->
+            object : CountDownTimer(totalDuration.toLong(), updateInterval) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
+                    timers[index].progress = progress
+                }
+
+                override fun onFinish() {
+                    timers[index].progress = 0
+                    if (timers[index].visibility == View.VISIBLE) {
+                        countDownTimers.forEach { timer ->
+                            timer.cancel()
+                        }
+                        gameOver = true
+                        gameOverDialog()
+                    }
+                }
+            }
+        }
+        timers.forEach { timer ->
+            timer.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun generateQuestion() { // CHANGE LOGIC HERE
         questionShown += 1
         val question = IntArray(3)
         val isTooMuch: Boolean
 
-        if (buttonQuestions.size < 6) {
-            question[0] = (1..10).random()
-            question[1] = (1..10).random()
+        when (intent.getStringExtra(getGameMode)) {
+            "penjumlahan" -> {
+                if (buttonQuestions.size < 6) {
+                    question[0] = (1..10).random()
+                    question[1] = (1..10).random()
 
-            buttonQuestions.add(question[0])
-            buttonQuestions.add(question[1])
+                    buttonQuestions.add(question[0])
+                    buttonQuestions.add(question[1])
 
-            isTooMuch = false
-        } else {
-            val temp = buttonQuestions.toMutableList()
-            val numbers = temp.toMutableList()
+                    isTooMuch = false
+                } else {
+                    val temp = buttonQuestions.toMutableList()
+                    val numbers = temp.toMutableList()
 
-            var randomIndex: Int = (0 until numbers.size).random()
-            var randomElement: Int = numbers.removeAt(randomIndex)
-            question[0] = randomElement
+                    var randomIndex: Int = (0 until numbers.size).random()
+                    var randomElement: Int = numbers.removeAt(randomIndex)
+                    question[0] = randomElement
 
-            randomIndex = (0 until numbers.size).random()
-            randomElement = numbers.removeAt(randomIndex)
-            question[1] = randomElement
+                    randomIndex = (0 until numbers.size).random()
+                    randomElement = numbers.removeAt(randomIndex)
+                    question[1] = randomElement
 
-            isTooMuch = true
+                    isTooMuch = true
+                }
+
+                question[2] = question[0] + question[1]
+            }
+            "pengurangan" -> {
+                if (buttonQuestions.size < 6) {
+                    question[0] = (1..10).random()
+                    question[1] = (1..10).random()
+
+                    buttonQuestions.add(question[0])
+                    buttonQuestions.add(question[1])
+
+                    isTooMuch = false
+                } else {
+                    val temp = buttonQuestions.toMutableList()
+                    val numbers = temp.toMutableList()
+
+                    var randomIndex: Int = (0 until numbers.size).random()
+                    var randomElement: Int = numbers.removeAt(randomIndex)
+                    question[0] = randomElement
+
+                    randomIndex = (0 until numbers.size).random()
+                    randomElement = numbers.removeAt(randomIndex)
+                    question[1] = randomElement
+
+                    isTooMuch = true
+                }
+
+                question[2] = question[0] - question[1]
+            }
+            "perkalian" -> {
+                if (buttonQuestions.size < 6) {
+                    question[0] = (1..10).random()
+                    question[1] = (1..10).random()
+
+                    buttonQuestions.add(question[0])
+                    buttonQuestions.add(question[1])
+
+                    isTooMuch = false
+                } else {
+                    val temp = buttonQuestions.toMutableList()
+                    val numbers = temp.toMutableList()
+
+                    var randomIndex: Int = (0 until numbers.size).random()
+                    var randomElement: Int = numbers.removeAt(randomIndex)
+                    question[0] = randomElement
+
+                    randomIndex = (0 until numbers.size).random()
+                    randomElement = numbers.removeAt(randomIndex)
+                    question[1] = randomElement
+
+                    isTooMuch = true
+                }
+
+                question[2] = question[0] * question[1]
+            }
+            "pembagian" -> {
+                if (buttonQuestions.size < 6) {
+                    question[0] = (1..10).random()
+                    question[1] = (1..10).random()
+
+                    buttonQuestions.add(question[0])
+                    buttonQuestions.add(question[1])
+
+                    isTooMuch = false
+                } else {
+                    val temp = buttonQuestions.toMutableList()
+                    val numbers = temp.toMutableList()
+
+                    var randomIndex: Int = (0 until numbers.size).random()
+                    var randomElement: Int = numbers.removeAt(randomIndex)
+                    question[0] = randomElement
+
+                    randomIndex = (0 until numbers.size).random()
+                    randomElement = numbers.removeAt(randomIndex)
+                    question[1] = randomElement
+
+                    isTooMuch = true
+                }
+
+                val quotient = question[0] / question[1]
+                question[2] = if (question[0] % question[1] == 0) {
+                    quotient // If the remainder is 0, the result is an integer
+                } else {
+                    quotient + 1 // Add 1 to the quotient to make it an integer
+                }
+            }
+            else -> {
+                isTooMuch = false
+            }
         }
-
-        question[2] = question[0] - question[1]
-
 
         for (i in 0..2) {
             var randomNumber = (0..31).random()
@@ -195,11 +296,11 @@ class Pengurangan : AppCompatActivity() {
                 if (infoText.text.isNullOrEmpty()) {
                     infoText.append(buttons[id].text.toString())
                 } else if (infoText.text.toString() == resources.getString(R.string.status_incorrect) ||
-                    infoText.text.toString() == resources.getString(R.string.status_correct) ||
-                    infoText.text.toString() == resources.getString(R.string.status_empty)) {
+                        infoText.text.toString() == resources.getString(R.string.status_correct) ||
+                        infoText.text.toString() == resources.getString(R.string.status_empty)) {
                     infoText.text = buttons[id].text.toString()
                 } else {
-                    infoText.append(" - " + buttons[id].text.toString())
+                    infoText.append(" + " + buttons[id].text.toString())
                 }
             }
         } else if (type == "Answer") {
@@ -224,7 +325,29 @@ class Pengurangan : AppCompatActivity() {
                         .repeat(0)
                         .playOn(infoText)
                 } else { // CHANGE LOGIC HERE
-                    if (chosenBtnText.reduce { total, next -> total - next } == buttons[id].text.toString().toInt()) { // CORRECT
+                    val isCorrect: Boolean = when (intent.getStringExtra(getGameMode)) {
+                        "penjumlahan" -> {
+                            chosenBtnText.sum() == buttons[id].text.toString().toInt()
+                        }
+
+                        "pengurangan" -> {
+                            chosenBtnText.reduce { total, next -> total - next } == buttons[id].text.toString().toInt()
+                        }
+
+                        "perkalian" -> {
+                            chosenBtnText.reduce { total, next -> total * next } == buttons[id].text.toString().toInt()
+                        }
+
+                        "pembagian" -> {
+                            chosenBtnText.reduce { total, next -> total / next } == buttons[id].text.toString().toInt()
+                        }
+
+                        else -> {
+                            false
+                        }
+                    }
+
+                    if (isCorrect) { // CORRECT
                         infoText.text = resources.getString(R.string.status_correct)
                         // Correct text animation
                         YoYo.with(Techniques.RubberBand)
@@ -246,7 +369,6 @@ class Pengurangan : AppCompatActivity() {
 
                         coinsEarned += 10
                         numberAnimation(coinText, coinsEarned - 10, coinsEarned)
-//                        coinText.text = coinsEarned.toString()
                         questionShown -= 1
                         answered += 1
 
@@ -266,10 +388,17 @@ class Pengurangan : AppCompatActivity() {
 
                         // Reset buttons' state
                         for (button_id in 0 until chosenBtnId.size) {
-                            buttons[chosenBtnId[button_id]].setBackgroundColor(Color.RED)
+                            val buttonColor: Int = when (buttons[chosenBtnId[button_id]].tag) {
+                                1 -> Color.rgb(255, 192, 203)
+                                2 -> Color.rgb(220, 120, 120)
+                                3 -> Color.RED
+                                else -> -1
+                            }
+                            buttons[chosenBtnId[button_id]].setBackgroundColor(buttonColor)
                             buttons[chosenBtnId[button_id]].isEnabled = true
                         }
                     }
+
                     chosenBtnText.clear()
                     chosenBtnId.clear()
                 }
@@ -306,7 +435,6 @@ class Pengurangan : AppCompatActivity() {
 
 
         buttons[id].setBackgroundColor(buttonColor)
-//        buttons[id].setBackgroundColor(Color.RED)
         buttons[id].isEnabled = true
 
 
@@ -315,13 +443,13 @@ class Pengurangan : AppCompatActivity() {
     private fun gameOverDialog() {
         val totalCoins = coinsEarned + coinsMainMenu
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this@GameScreen)
             .setTitle("GAME OVER")
             .setMessage("Coins Earned: $coinsEarned" +
                     "\nTotal Coins: $totalCoins")
             .setPositiveButton("OK") { _, _ ->
                 val intent =
-                    Intent(this, MainActivity::class.java).apply {
+                    Intent(this@GameScreen, MainActivity::class.java).apply {
                         putExtra(
                             MainActivity.getData,
                             coinsEarned.toString()
@@ -330,7 +458,7 @@ class Pengurangan : AppCompatActivity() {
                 startActivity(intent)
 
                 Toast.makeText(
-                    this,
+                    this@GameScreen,
                     "Back to Main Menu",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -381,6 +509,7 @@ class Pengurangan : AppCompatActivity() {
     }
 
     companion object {
-        const val getCoins = "Get total coins from main menu."
+        const val getCoins = "Get total coins."
+        const val getGameMode = "Get the game mode."
     }
 }

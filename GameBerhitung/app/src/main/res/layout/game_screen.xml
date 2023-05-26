@@ -10,7 +10,7 @@
     android:layout_marginRight="25dp"
     android:layout_marginBottom="25dp"
     android:orientation="vertical"
-    tools:context=".Pengurangan">
+    tools:context=".GameScreen">
 
     <!-- LAYOUT SCORE -->
     <LinearLayout

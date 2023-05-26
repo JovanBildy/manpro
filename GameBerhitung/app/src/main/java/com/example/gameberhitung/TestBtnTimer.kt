@@ -2,35 +2,30 @@ package com.example.gameberhitung
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.widget.Button
-import android.widget.ProgressBar
+import android.widget.ImageButton
 
 class TestBtnTimer : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.test_btn_timer)
 
-        val progressBar: ProgressBar = findViewById(R.id.progressBar)
-        val myButton: Button = findViewById(R.id.button33)
+//        val frameLayout = findViewById<FrameLayout>(R.id.frameLayout1)
+        val imageButton = findViewById<ImageButton>(R.id.imageButton1)
+        val button = findViewById<Button>(R.id.button1)
 
-        val totalDuration = 10000L // Total duration in milliseconds (10 secs)
-        val updateInterval = 100L // Update interval in milliseconds (100 milli-secs)
+        button.setOnClickListener {
+            // Perform any desired actions when the FrameLayout is clicked
+            // For example, change the ImageButton source or background
 
-        val countDownTimer = object : CountDownTimer(totalDuration, updateInterval) {
-            override fun onTick(millisUntilFinished: Long) {
-                val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
-                progressBar.progress = progress
-            }
+            // Change the ImageButton source to a different image
+            imageButton.setImageResource(R.drawable.button1_grey)
 
-            override fun onFinish() {
-                progressBar.progress = 0
-            }
+            // Change the ImageButton background
+            imageButton.setBackgroundResource(R.drawable.button1_grey)
         }
 
-        myButton.setOnClickListener {
-            countDownTimer.start()
-        }
 
     }
 }

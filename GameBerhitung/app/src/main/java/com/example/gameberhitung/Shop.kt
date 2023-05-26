@@ -1,11 +1,14 @@
 package com.example.gameberhitung
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -17,26 +20,16 @@ class Shop : AppCompatActivity() {
     private lateinit var buyButtons: Array<TextView>
     private lateinit var closeButton: Button
     private lateinit var shopText: TextView
+    private lateinit var koinKu: TextView
     private var coinKu: Int = 0
-
-    // Temporary variables, will be replaced with shared preferences later
-//    private var coins = 300
-//    private lateinit var inventory: MutableMap<String, Boolean>
-//    private var equipped = "default"
 
     @SuppressLint("DiscouragedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.shop_screen)
 
-        // Temporary variables
-//        inventory = mutableMapOf(
-//            "button_es" to false,
-//            "button_sedang" to false,
-//            "button_mahal" to false
-//        )
-
         shopText = findViewById(R.id.shopText)
+        koinKu = findViewById(R.id.uangkoin)
         closeButton = findViewById(R.id.buttonClose)
         closeButton.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java).apply {
@@ -56,7 +49,9 @@ class Shop : AppCompatActivity() {
             }
         }
 
-//        checkInventory()
+//        resetInventory()
+
+        checkInventory()
     }
 
     private fun getCoins() {
@@ -73,8 +68,6 @@ class Shop : AppCompatActivity() {
 
         val txtCoin : TextView = findViewById(R.id.uangkoin)
         txtCoin.text = currentCoins.toString()
-
-//        txtCoin.text = coins.toString()
     }
 
     private fun showConfirmationDialog(cost: String, btnId: String) {
@@ -90,12 +83,6 @@ class Shop : AppCompatActivity() {
             } else {
                 performPurchase(cost, btnId)
             }
-
-//            if (coins < cost.toInt()) {
-//                shopText.visibility = View.VISIBLE
-//            } else {
-//                performPurchase(cost, btnId)
-//            }
         }
         builder.setNegativeButton("No", null)
         builder.create().show()
@@ -109,8 +96,6 @@ class Shop : AppCompatActivity() {
         editor.putBoolean(btnId, true)
         editor.apply()
 
-//        inventory[btnId] = true
-
         // UPDATE COINS
         val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
         val currentCoins = sharedPreferences.getString("coins", "")?.toIntOrNull() ?: 0
@@ -120,26 +105,20 @@ class Shop : AppCompatActivity() {
         editorEnd.apply()
         coinKu = totalCoins
 
-//        coins -= cost.toInt()
-
         // UPDATE EQUIPPED BUTTON
         val editorEquip = sharedPreferences.edit()
         editorEquip.putString("equipment", btnId)
         editorEquip.apply()
-
-//        equipped = btnId
-
         checkInventory()
 
         // UPDATE THE INFO TEXT
-//        val buttonName = convertUnderscoreToTitle(equipped)
-
         val buttonName = sharedPreferences.getString("equipment", "")
             ?.let { convertUnderscoreToTitle(it) }
         shopText.text = "Purchase successful! \n" +
                 "You have bought $buttonName for $cost coins."
         shopText.setTextColor(Color.GREEN)
         shopText.visibility = View.VISIBLE
+        numberAnimation(koinKu, currentCoins, totalCoins)
     }
 
     @SuppressLint("SetTextI18n")
@@ -153,7 +132,7 @@ class Shop : AppCompatActivity() {
                 val equippedButton = sharedPreferences.getString("equipment", "")
                 if (equippedButton == cButton) { // If the button is equipped
                     custom_button.text = "EQUIPPED"
-                    custom_button.setOnClickListener { unequip(custom_button) }
+                    custom_button.setOnClickListener { unequip() }
                 } else { // If the button is unequipped
                     custom_button.text = "PURCHASED"
                     custom_button.setOnClickListener { equip(custom_button) }
@@ -166,23 +145,6 @@ class Shop : AppCompatActivity() {
                     showConfirmationDialog(cost, btnId)
                 }
             }
-
-//            if (inventory[cButton] == true) {
-//                if (equipped == cButton) {
-//                    custom_button.text = "EQUIPPED"
-//                    custom_button.setOnClickListener { unequip(custom_button) }
-//                } else {
-//                    custom_button.text = "PURCHASED"
-//                    custom_button.setOnClickListener { equip(custom_button) }
-//                }
-//            } else {
-//                val cost = custom_button.text.toString().replace(" $", "")
-//                val btnId = custom_button.tag.toString()
-//                custom_button.setOnClickListener {
-//                    showConfirmationDialog(cost, btnId)
-//                    shopText.visibility = View.INVISIBLE
-//                }
-//            }
         }
     }
 
@@ -196,21 +158,14 @@ class Shop : AppCompatActivity() {
             if (bButton.tag.toString() == eButton) {
                 equippedButton = bButton
             }
-
-//            if (bButton.tag.toString() == equipped) {
-//                equippedButton = bButton
-//            }
         }
         if (equippedButton != null) {
-            unequip(equippedButton)
+            unequip()
         } else {
             println("equippedButton is null!")
         }
 
         // EQUIP THE NEW BUTTON
-//        equipped = button.tag.toString()
-//        inventory[button.tag.toString()] = true
-
         val editorEnd = sharedPreferences.edit()
         editorEnd.putString("equipment", button.tag.toString())
         editorEnd.apply()
@@ -221,23 +176,17 @@ class Shop : AppCompatActivity() {
         editorInventory.apply()
 
         shopText.visibility = View.INVISIBLE
+        checkInventory()
     }
 
-    private fun unequip(button: TextView) {
-//        equipped = "default"
-//        inventory[button.tag.toString()] = false
-
+    private fun unequip() {
         val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
         val editorEnd = sharedPreferences.edit()
         editorEnd.putString("equipment", "default")
         editorEnd.apply()
 
-        val shopPreferences = getSharedPreferences("ShopPrefs", Context.MODE_PRIVATE)
-        val editorInventory = shopPreferences.edit()
-        editorInventory.putBoolean(button.tag.toString(), false)
-        editorInventory.apply()
-
         shopText.visibility = View.INVISIBLE
+        checkInventory()
     }
 
     private fun convertUnderscoreToTitle(input: String): String {
@@ -250,4 +199,54 @@ class Shop : AppCompatActivity() {
         } }
     }
 
+    private fun numberAnimation(textViewKu: TextView, start: Int, end: Int) {
+        // NUMBER ANIMATION
+        val valueAnimator = ValueAnimator.ofInt(start, end)
+        valueAnimator.duration = 2000
+
+        val initialFontSize = textViewKu.textSize // Store the initial font size
+
+        valueAnimator.addUpdateListener { animator ->
+            val animatedValue = animator.animatedValue as Int
+            textViewKu.text = animatedValue.toString()
+
+            val scale = animatedValue.toFloat() / 100.0f
+
+            // Decrease the font size after reaching halfway point of the animation
+            val fontSize: Float = if (scale >= 0.5f) {
+                val scaleDown = (1.0f - scale) * 2.0f
+                initialFontSize + (scaleDown * 5.0f)
+            } else {
+                initialFontSize + (scale * 5.0f)
+            }
+
+            textViewKu.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize)
+        }
+
+        valueAnimator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {
+                // Animation started, increase the font size
+                textViewKu.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialFontSize + 20.0f)
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                // Animation ended, revert the font size back to normal
+                textViewKu.setTextSize(TypedValue.COMPLEX_UNIT_PX, initialFontSize)
+            }
+
+            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+
+        valueAnimator.start()
+    }
+
+//    private fun resetInventory() {
+//        val shopPreferences = getSharedPreferences("ShopPrefs", Context.MODE_PRIVATE)
+//        val editorInventory = shopPreferences.edit()
+//        for (custom_button in buyButtons) {
+//            editorInventory.putBoolean(custom_button.tag.toString(), false)
+//        }
+//        editorInventory.apply()
+//    }
 }

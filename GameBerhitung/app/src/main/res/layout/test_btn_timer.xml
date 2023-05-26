@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
@@ -7,44 +7,35 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:gravity="center_horizontal|center_vertical"
+    android:orientation="vertical"
     tools:context=".TestBtnTimer">
 
-    <Button
-        android:id="@+id/button33"
+    <FrameLayout
+        android:id="@+id/frameLayout1"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="250dp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="24"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="85dp"
-        android:layout_height="10dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:background="@android:color/black"
-        android:backgroundTint="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button33" />
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/button1_blue"
+            android:minWidth="88dp"
+            android:minHeight="48dp"
+            android:scaleType="fitCenter"
+            tools:ignore="DuplicateClickableBoundsCheck,SpeakableTextPresentCheck"
+            tools:layout_editor_absoluteX="229dp"
+            tools:layout_editor_absoluteY="34dp" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:scaleType="fitCenter"
-        android:scaleX="1"
-        android:scaleY="1"
-        app:srcCompat="@drawable/custom_button_1_blue"
-        tools:layout_editor_absoluteX="229dp"
-        tools:layout_editor_absoluteY="34dp" />
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:text="1"
+            tools:ignore="HardcodedText" />
+    </FrameLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

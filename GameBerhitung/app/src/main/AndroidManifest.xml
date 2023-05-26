@@ -13,20 +13,18 @@
         android:theme="@style/Theme.GameBerhitung"
         tools:targetApi="31">
         <activity
+            android:name=".GameScreen2"
+            android:exported="false" />
+        <activity
             android:name=".Shop"
             android:exported="false" />
         <activity
-            android:name=".Pembagian"
+            android:name=".GameScreen"
             android:exported="false" />
         <activity
-            android:name=".Perkalian"
-            android:exported="false" />
-        <activity
-            android:name=".Pengurangan"
-            android:exported="false" />
-        <activity
-            android:name=".Penjumlahan"
-            android:exported="false" />
+            android:name=".TestBtnTimer"
+            android:label="TestBtnTimer" >
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -25,13 +25,19 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
 
         val editorStart = sharedPreferences.edit()
-        if (!sharedPreferences.contains("coins") || sharedPreferences.all["coins"] !is String) {
+        if (!sharedPreferences.contains("coins")
+            || sharedPreferences.all["coins"] !is String) {
             editorStart.clear()
             editorStart.putString("coins", "0")
             editorStart.apply()
         }
 
-        if (!sharedPreferences.contains("equipment") || sharedPreferences.all["equipment"] !is String) {
+        // Buat nge-cheat koin
+//        editorStart.putString("coins", "9999")
+//        editorStart.apply()
+
+        if (!sharedPreferences.contains("equipment")
+            || sharedPreferences.all["equipment"] !is String) {
             editorStart.clear()
             editorStart.putString("equipment", "default")
             editorStart.apply()
@@ -42,9 +48,6 @@ class MainActivity : AppCompatActivity() {
 
         val totalCoins = currentCoins + coinsEarned
 
-//        Log.d("cek123", "currentCoins: $currentCoins")
-//        Log.d("cek123", "coinsEarned: $coinsEarned")
-
         txtCoin.text = totalCoins.toString()
 
         val editorEnd = sharedPreferences.edit()
@@ -52,35 +55,40 @@ class MainActivity : AppCompatActivity() {
         editorEnd.apply()
 
         clickAdd.setOnClickListener {
-            val intent = Intent(this@MainActivity, Penjumlahan::class.java).apply {
-                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
+                putExtra(GameScreen.getCoins, totalCoins.toString())
+                putExtra(GameScreen.getGameMode, "penjumlahan")
             }
             startActivity(intent)
         }
 
         clickMin.setOnClickListener {
-            val intent = Intent(this@MainActivity, Pengurangan::class.java).apply {
-                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
+                putExtra(GameScreen.getCoins, totalCoins.toString())
+                putExtra(GameScreen.getGameMode, "pengurangan")
             }
             startActivity(intent)
         }
 
         clickTimes.setOnClickListener {
-            val intent = Intent(this@MainActivity, Perkalian::class.java).apply {
-                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
+                putExtra(GameScreen.getCoins, totalCoins.toString())
+                putExtra(GameScreen.getGameMode, "perkalian")
             }
             startActivity(intent)
         }
 
         clickDivide.setOnClickListener {
-            val intent = Intent(this@MainActivity, Pembagian::class.java).apply {
-                putExtra(Penjumlahan.getCoins, totalCoins.toString())
+            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
+                putExtra(GameScreen.getCoins, totalCoins.toString())
+                putExtra(GameScreen.getGameMode, "pembagian")
             }
             startActivity(intent)
         }
 
         clickCoinShop.setOnClickListener {
             val intent = Intent(this@MainActivity, Shop::class.java)
+//            val intent = Intent(this@MainActivity, TestBtnTimer::class.java)
             startActivity(intent)
         }
     }
