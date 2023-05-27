@@ -147,7 +147,8 @@
         app:layout_constraintHorizontal_bias="0.645"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/square1"
-        app:layout_constraintVertical_bias="0.34" />
+        app:layout_constraintVertical_bias="0.34"
+        app:srcCompat="@drawable/button1_blue" />
 
     <TextView
         android:id="@+id/square4"
@@ -174,7 +175,8 @@
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="@id/square2"
         app:layout_constraintTop_toTopOf="@id/square2"
-        app:layout_constraintVertical_bias="0.34" />
+        app:layout_constraintVertical_bias="0.34"
+        app:srcCompat="@drawable/button3_blue" />
 
     <TextView
         android:id="@+id/square5"
@@ -201,7 +203,8 @@
         app:layout_constraintEnd_toEndOf="@id/square3"
         app:layout_constraintStart_toStartOf="@id/square3"
         app:layout_constraintTop_toTopOf="@id/square3"
-        app:layout_constraintVertical_bias="0.34" />
+        app:layout_constraintVertical_bias="0.34"
+        app:srcCompat="@drawable/button2_red" />
 
     <TextView
         android:id="@+id/square6"

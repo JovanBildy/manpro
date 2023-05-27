@@ -96,9 +96,17 @@ class GameScreen2 : AppCompatActivity() {
                 buttonTypes["grey"] = R.drawable.button1_grey
             }
 
-            "button_sedang" -> { /* TEMP */ }
+            "button_sedang" -> {
+                buttonTypes["blue"] = R.drawable.button2_blue
+                buttonTypes["red"] = R.drawable.button2_red
+                buttonTypes["grey"] = R.drawable.button2_grey
+            }
 
-            "button_mahal" -> { /* TEMP */ }
+            "button_mahal" -> {
+                buttonTypes["blue"] = R.drawable.button3_blue
+                buttonTypes["red"] = R.drawable.button3_red
+                buttonTypes["grey"] = R.drawable.button3_grey
+            }
 
             else -> { }
         }
