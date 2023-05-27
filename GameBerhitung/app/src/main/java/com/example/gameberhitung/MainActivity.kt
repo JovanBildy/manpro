@@ -2,6 +2,7 @@ package com.example.gameberhitung
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 //import android.util.Log
@@ -10,6 +11,12 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var intentKu: Intent
+
+    private var totalCoins: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,8 +28,7 @@ class MainActivity : AppCompatActivity() {
         val clickCoinShop : LinearLayout = findViewById(R.id.coinShop)
         val txtCoin : TextView = findViewById(R.id.textCoin)
 
-        // SHARED PREFERENCES
-        val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
 
         val editorStart = sharedPreferences.edit()
         if (!sharedPreferences.contains("coins")
@@ -31,11 +37,6 @@ class MainActivity : AppCompatActivity() {
             editorStart.putString("coins", "0")
             editorStart.apply()
         }
-
-        // Buat nge-cheat koin
-//        editorStart.putString("coins", "9999")
-//        editorStart.apply()
-
         if (!sharedPreferences.contains("equipment")
             || sharedPreferences.all["equipment"] !is String) {
             editorStart.clear()
@@ -45,52 +46,41 @@ class MainActivity : AppCompatActivity() {
 
         val currentCoins = sharedPreferences.getString("coins", "")?.toIntOrNull() ?: 0
         val coinsEarned = intent.getStringExtra(getData)?.toIntOrNull() ?: 0
-
-        val totalCoins = currentCoins + coinsEarned
-
+        totalCoins = currentCoins + coinsEarned
         txtCoin.text = totalCoins.toString()
 
         val editorEnd = sharedPreferences.edit()
         editorEnd.putString("coins", totalCoins.toString())
         editorEnd.apply()
 
-        clickAdd.setOnClickListener {
-            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
-                putExtra(GameScreen.getCoins, totalCoins.toString())
-                putExtra(GameScreen.getGameMode, "penjumlahan")
-            }
-            startActivity(intent)
-        }
+        clickAdd.setOnClickListener { goToGameScreen("penjumlahan") }
 
-        clickMin.setOnClickListener {
-            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
-                putExtra(GameScreen.getCoins, totalCoins.toString())
-                putExtra(GameScreen.getGameMode, "pengurangan")
-            }
-            startActivity(intent)
-        }
+        clickMin.setOnClickListener { goToGameScreen("pengurangan") }
 
-        clickTimes.setOnClickListener {
-            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
-                putExtra(GameScreen.getCoins, totalCoins.toString())
-                putExtra(GameScreen.getGameMode, "perkalian")
-            }
-            startActivity(intent)
-        }
+        clickTimes.setOnClickListener { goToGameScreen("perkalian") }
 
-        clickDivide.setOnClickListener {
-            val intent = Intent(this@MainActivity, GameScreen::class.java).apply {
-                putExtra(GameScreen.getCoins, totalCoins.toString())
-                putExtra(GameScreen.getGameMode, "pembagian")
-            }
-            startActivity(intent)
-        }
+        clickDivide.setOnClickListener { goToGameScreen("pembagian") }
 
         clickCoinShop.setOnClickListener {
             val intent = Intent(this@MainActivity, Shop::class.java)
-//            val intent = Intent(this@MainActivity, TestBtnTimer::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun goToGameScreen(gameMode: String) {
+        intentKu = if (sharedPreferences.getString("equipment", "") != "default") {
+            Intent(this@MainActivity, GameScreen2::class.java).apply {
+                putExtra(GameScreen.getCoins, totalCoins.toString())
+                putExtra(GameScreen.getGameMode, gameMode)
+            }
+        } else {
+            Intent(this@MainActivity, GameScreen::class.java).apply {
+                putExtra(GameScreen.getCoins, totalCoins.toString())
+                putExtra(GameScreen.getGameMode, gameMode)
+            }
+        }
+
+        startActivity(intentKu)
     }
 
     companion object {

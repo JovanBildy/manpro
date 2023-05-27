@@ -20,10 +20,11 @@ class TestBtnTimer : AppCompatActivity() {
             // For example, change the ImageButton source or background
 
             // Change the ImageButton source to a different image
-            imageButton.setImageResource(R.drawable.button1_grey)
+//            imageButton.setImageResource(R.drawable.button1_grey)
 
             // Change the ImageButton background
-            imageButton.setBackgroundResource(R.drawable.button1_grey)
+//            imageButton.setBackgroundResource(R.drawable.button1_grey)
+            imageButton.alpha = 0.80f
         }
 
 

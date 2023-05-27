@@ -3,7 +3,6 @@ package com.example.gameberhitung
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -18,7 +17,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
@@ -26,7 +24,6 @@ import com.daimajia.androidanimations.library.YoYo
 class GameScreen : AppCompatActivity() {
 
     private lateinit var buttons: Array<Button>
-//    private lateinit var imageButtons: Array<ImageButton>
     private lateinit var timers: Array<ProgressBar>
     private lateinit var countDownTimers: Array<CountDownTimer>
     private lateinit var infoText: TextView
@@ -95,15 +92,6 @@ class GameScreen : AppCompatActivity() {
                 visibility = View.INVISIBLE
             }
         }
-
-//        imageButtons = Array(32) { index ->
-//            findViewById<ImageButton>(resources.getIdentifier(
-//                "imageButton${index + 1}", "id", packageName)).apply {
-//                setOnClickListener { }
-//                setBackgroundResource(R.drawable.button1_blue)
-//                visibility = View.VISIBLE
-//            }
-//        }
     }
 
     @SuppressLint("DiscouragedApi")
@@ -300,7 +288,13 @@ class GameScreen : AppCompatActivity() {
                         infoText.text.toString() == resources.getString(R.string.status_empty)) {
                     infoText.text = buttons[id].text.toString()
                 } else {
-                    infoText.append(" + " + buttons[id].text.toString())
+                    when (intent.getStringExtra(getGameMode)) {
+                        "penjumlahan" -> { infoText.append(" + " + buttons[id].text.toString()) }
+                        "pengurangan" -> {infoText.append(" - " + buttons[id].text.toString())}
+                        "perkalian" -> { infoText.append(" * " + buttons[id].text.toString()) }
+                        "pembagian" -> {infoText.append(" / " + buttons[id].text.toString())}
+                        else -> { Log.d("cek123", "Game mode invalid!") }
+                    }
                 }
             }
         } else if (type == "Answer") {
