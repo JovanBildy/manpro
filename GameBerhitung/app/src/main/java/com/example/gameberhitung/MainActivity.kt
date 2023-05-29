@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         val clickMin : ImageView = findViewById(R.id.button_min)
         val clickTimes : ImageView = findViewById(R.id.button_times)
         val clickDivide : ImageView = findViewById(R.id.button_divide)
+        val help_button : ImageView = findViewById(R.id.helpButton)
         val clickCoinShop : LinearLayout = findViewById(R.id.coinShop)
         val txtCoin : TextView = findViewById(R.id.textCoin)
 
@@ -60,6 +61,11 @@ class MainActivity : AppCompatActivity() {
         clickTimes.setOnClickListener { goToGameScreen("perkalian") }
 
         clickDivide.setOnClickListener { goToGameScreen("pembagian") }
+
+        help_button.setOnClickListener {
+            val intent = Intent(this@MainActivity, HelpScreen1::class.java)
+            startActivity(intent)
+        }
 
         clickCoinShop.setOnClickListener {
             val intent = Intent(this@MainActivity, Shop::class.java)
