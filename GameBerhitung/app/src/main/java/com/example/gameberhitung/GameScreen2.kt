@@ -10,17 +10,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 
-@Suppress("DEPRECATION")
 class GameScreen2 : AppCompatActivity() {
 
     private lateinit var buttons: Array<Button>
@@ -31,10 +32,13 @@ class GameScreen2 : AppCompatActivity() {
     private lateinit var infoText: TextView
     private lateinit var coinText: TextView
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var pauseButton: ImageView
+    private val remainingTime: LongArray = LongArray(25) { totalDuration.toLong() }
 
     private var coinsMainMenu: Int = 0
     private var coinsEarned: Int = 0
     private var isGameOver: Boolean = false
+    private var isPaused = false
     private var equippedButton: String = ""
 
     // RED -> Soal | Question
@@ -55,6 +59,23 @@ class GameScreen2 : AppCompatActivity() {
     private var chosenBtnText = mutableListOf<Int>()
     private var chosenBtnId = mutableListOf<Int>()
 
+    private val handler = Handler(Looper.getMainLooper())
+    private var questionGeneratorRunnable = object : Runnable {
+        override fun run() {
+            if (!isGameOver && !isPaused) {
+                if (questionShown <= 0) {
+                    generateQuestion()
+                    generateQuestion()
+                } else if (questionShown <= 5) {
+                    generateQuestion()
+                }
+                handler.postDelayed(this, spawnRate.toLong())
+            } else {
+                stopQuestionGeneration()
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.game_screen2)
@@ -63,6 +84,7 @@ class GameScreen2 : AppCompatActivity() {
         infoText = findViewById(R.id.infoText)
         coinText = findViewById(R.id.coinText)
         coinsMainMenu = intent.getStringExtra(getCoins)?.toIntOrNull() ?: 0
+        pauseButton = findViewById(R.id.pauseButton)
 
         // Get equipped button
         sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
@@ -70,19 +92,80 @@ class GameScreen2 : AppCompatActivity() {
 
         prepareTimers()
         prepareButtons()
-        prepareSpawner()
+        startQuestionGeneration()
+
+        pauseButton.setOnClickListener {
+            if (!isPaused) {
+                pauseScreen()
+
+            } else {
+                resumeScreen()
+
+            }
+        }
+    }
+
+    private fun pauseScreen() {
+        for (i in 0 until visibleBtn.size) {
+            remainingTime[visibleBtn[i]] = (totalDuration - (totalDuration * timers[visibleBtn[i]].progress / 100)).toLong()
+            countDownTimers[visibleBtn[i]].cancel()
+        }
+
+        AlertDialog.Builder(this@GameScreen2)
+            .setTitle("The game is paused")
+            .setPositiveButton("Resume") { _, _ ->
+                resumeScreen()
+            }
+            .setNegativeButton("Back to main menu") { _, _ ->
+                val intent =
+                    Intent(this@GameScreen2, MainActivity::class.java)
+                startActivity(intent)
+            }
+            .setCancelable(false)
+            .show()
+
+        isPaused = true
+    }
+
+    private fun resumeScreen() {
+        for (i in 0 until visibleBtn.size) {
+            val remainingMillis = totalDuration - remainingTime[visibleBtn[i]]
+            countDownTimers[visibleBtn[i]] = object : CountDownTimer(remainingMillis.toLong(), 100L) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
+                    timers[visibleBtn[i]].progress = progress
+                }
+
+                override fun onFinish() {
+                    timers[visibleBtn[i]].progress = 0
+                    if (timers[visibleBtn[i]].visibility == View.VISIBLE) {
+                        countDownTimers.forEach { timer ->
+                            timer.cancel()
+                        }
+                        isGameOver = true
+                        showGameOverDialog()
+                    } else {
+                        countDownTimers[visibleBtn[i]].cancel()
+                    }
+                }
+            }.start()
+        }
+
+        handler.postDelayed(questionGeneratorRunnable, spawnRate.toLong() / 2)
+
+        isPaused = false
     }
 
     @SuppressLint("DiscouragedApi")
     private fun prepareButtons() {
-        buttons = Array(32) { index ->
+        buttons = Array(25) { index ->
             findViewById<Button>(resources.getIdentifier(
                 "button${index+1}", "id", packageName)).apply {
                 visibility = View.INVISIBLE
             }
         }
 
-        imageButtons = Array(32) { index ->
+        imageButtons = Array(25) { index ->
             findViewById<ImageButton>(resources.getIdentifier(
                 "imageButton${index+1}", "id", packageName)).apply {
                 visibility = View.INVISIBLE
@@ -114,52 +197,41 @@ class GameScreen2 : AppCompatActivity() {
 
     @SuppressLint("DiscouragedApi")
     private fun prepareTimers() {
-        val updateInterval = 100L // Update interval in milliseconds (100 milli-secs)
-
-        timers = Array(32) { index ->
-            findViewById<ProgressBar?>(resources.getIdentifier(
-                "progressBar${index + 1}", "id", packageName)).apply {
-                visibility = View.INVISIBLE
-            }
+        timers = Array(25) { index ->
+            findViewById(resources.getIdentifier("progressBar${index + 1}", "id",
+                packageName))
         }
-
         countDownTimers = Array(timers.size) { index ->
-            object : CountDownTimer(totalDuration.toLong(), updateInterval) {
+            object : CountDownTimer(totalDuration.toLong(), 100L) {
                 override fun onTick(millisUntilFinished: Long) {
-                    val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
-                    timers[index].progress = progress
+                    timers[index].progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
                 }
 
                 override fun onFinish() {
                     timers[index].progress = 0
                     if (timers[index].visibility == View.VISIBLE) {
-                        countDownTimers.forEach { timer -> timer.cancel() }
+                        countDownTimers.forEach { timer ->
+                            timer.cancel()
+                        }
                         isGameOver = true
                         showGameOverDialog()
+                    } else {
+                        countDownTimers[index].cancel()
                     }
                 }
             }
+        }
+        timers.forEach { timer ->
+            timer.visibility = View.INVISIBLE
         }
     }
 
-    private fun prepareSpawner() {
-        val handler = Handler()
+    private fun startQuestionGeneration() {
+        handler.post(questionGeneratorRunnable)
+    }
 
-        val runnable = object : Runnable {
-            override fun run() {
-                if (!isGameOver) {
-                    if (questionShown <= 0) {
-                        generateQuestion(); generateQuestion()
-                        handler.postDelayed(this, spawnRate.toLong())
-                    } else if (questionShown <= 5) {
-                        generateQuestion()
-                        handler.postDelayed(this, spawnRate.toLong())
-                    }
-                }
-            }
-        }
-
-        handler.post(runnable)
+    private fun stopQuestionGeneration() {
+        handler.removeCallbacks(questionGeneratorRunnable)
     }
 
     private fun showButton(id: Int, number: Int, type: String) {
@@ -428,9 +500,9 @@ class GameScreen2 : AppCompatActivity() {
         }
 
         for (i in 0..2) {
-            var randomNumber = (0..31).random()
+            var randomNumber = (0..24).random()
             while (visibleBtn.contains(randomNumber)) {
-                randomNumber = (0..31).random()
+                randomNumber = (0..24).random()
             }
             visibleBtn.add(randomNumber)
 

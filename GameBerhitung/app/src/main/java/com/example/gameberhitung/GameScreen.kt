@@ -8,10 +8,12 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -20,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.daimajia.androidanimations.library.Techniques
 import com.daimajia.androidanimations.library.YoYo
 
-@Suppress("DEPRECATION")
 class GameScreen : AppCompatActivity() {
 
     private lateinit var buttons: Array<Button>
@@ -28,6 +29,7 @@ class GameScreen : AppCompatActivity() {
     private lateinit var countDownTimers: Array<CountDownTimer>
     private lateinit var infoText: TextView
     private lateinit var coinText: TextView
+    private lateinit var pauseButton: ImageView
 
     private var visibleBtn = mutableListOf<Int>()
     private var chosenBtnText = mutableListOf<Int>()
@@ -36,18 +38,41 @@ class GameScreen : AppCompatActivity() {
     private var coinsEarned = 0
     private var coinsMainMenu = 0
     private var gameOver = false
+    private var isPaused = false
 
-    // NEW MECHANIC
     private val buttonQuestions = mutableListOf<Int>()
+    private val remainingTime: LongArray = LongArray(25) { totalDuration.toLong() }
 
     // TIMER VARIABLES
-    private var totalDuration: Double = 30000.00 // Total duration in milliseconds (30 secs)
+    private var totalDuration: Double = 10000.00 // Total duration in milliseconds (30 secs)
     private val updateInterval = 100L // Update interval in milliseconds (100 milli-secs)
 
     // SPAWN RATE VARIABLES
     private var questionShown = 0
     private var answered = 0
     private var spawnRate: Double = 5000.00 // Initial spawn rate 5 seconds
+    private val handler = Handler(Looper.getMainLooper())
+    private var questionGeneratorRunnable = object : Runnable {
+        override fun run() {
+            if (!gameOver && !isPaused) {
+                if (questionShown <= 0) {
+                    generateQuestion()
+                    generateQuestion()
+                } else if (questionShown <= 5) {
+                    generateQuestion()
+                }
+                handler.postDelayed(this, spawnRate.toLong())
+            } else {
+                stopQuestionGeneration()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopQuestionGeneration()
+    }
+
 
     @SuppressLint("DiscouragedApi", "Recycle", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +82,7 @@ class GameScreen : AppCompatActivity() {
         infoText = findViewById(R.id.infoText)
         coinText = findViewById(R.id.coinText)
         coinsMainMenu = intent.getStringExtra(getCoins)?.toIntOrNull() ?: 0
+        pauseButton = findViewById(R.id.pauseButton)
 
         // TIMERS
         prepareTimers()
@@ -65,27 +91,83 @@ class GameScreen : AppCompatActivity() {
         prepareButtons()
 
         // SPAWNERS
-        val handler = Handler()
-        val runnable = object : Runnable {
-            override fun run() {
-                if (!gameOver) {
-                    if (questionShown <= 0) {
-                        generateQuestion()
-                        generateQuestion()
-                        handler.postDelayed(this, spawnRate.toLong())
-                    } else if (questionShown <= 5) {
-                        generateQuestion()
-                        handler.postDelayed(this, spawnRate.toLong())
-                    }
-                }
+        startQuestionGeneration()
+
+        pauseButton.setOnClickListener {
+            if (!isPaused) {
+                pauseScreen()
+
+            } else {
+                resumeScreen()
+
             }
         }
-        handler.post(runnable)
+    }
+    private fun pauseScreen() {
+        for (i in 0 until visibleBtn.size) {
+            remainingTime[visibleBtn[i]] = (totalDuration - (totalDuration * timers[visibleBtn[i]].progress / 100)).toLong()
+            countDownTimers[visibleBtn[i]].cancel()
+        }
+
+        AlertDialog.Builder(this@GameScreen)
+            .setTitle("The game is paused")
+            .setPositiveButton("Resume") { _, _ ->
+                resumeScreen()
+            }
+            .setNegativeButton("Back to main menu") { _, _ ->
+                val intent =
+                    Intent(this@GameScreen, MainActivity::class.java)
+                startActivity(intent)
+            }
+            .setCancelable(false)
+            .show()
+
+        stopQuestionGeneration()
+
+        isPaused = true
+    }
+
+    private fun resumeScreen() {
+        for (i in 0 until visibleBtn.size) {
+            val remainingMillis = totalDuration - remainingTime[visibleBtn[i]]
+            countDownTimers[visibleBtn[i]] = object : CountDownTimer(remainingMillis.toLong(), updateInterval) {
+                override fun onTick(millisUntilFinished: Long) {
+                    val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
+                    timers[visibleBtn[i]].progress = progress
+                }
+
+                override fun onFinish() {
+                    timers[visibleBtn[i]].progress = 0
+                    if (timers[visibleBtn[i]].visibility == View.VISIBLE) {
+                        countDownTimers.forEach { timer ->
+                            timer.cancel()
+                        }
+                        gameOver = true
+                        gameOverDialog()
+                    } else {
+                        countDownTimers[visibleBtn[i]].cancel()
+                    }
+                }
+            }.start()
+        }
+
+        handler.postDelayed(questionGeneratorRunnable, spawnRate.toLong() / 2)
+
+        isPaused = false
+    }
+
+
+    private fun startQuestionGeneration() {
+        handler.post(questionGeneratorRunnable)
+    }
+
+    private fun stopQuestionGeneration() {
+        handler.removeCallbacks(questionGeneratorRunnable)
     }
 
     @SuppressLint("DiscouragedApi")
     private fun prepareButtons() {
-        buttons = Array(32) { index ->
+        buttons = Array(25) { index ->
             findViewById<Button>(resources.getIdentifier(
                 "button${index+1}", "id", packageName)).apply {
                 setOnClickListener { }
@@ -96,15 +178,14 @@ class GameScreen : AppCompatActivity() {
 
     @SuppressLint("DiscouragedApi")
     private fun prepareTimers() {
-        timers = Array(32) { index ->
+        timers = Array(25) { index ->
             findViewById(resources.getIdentifier("progressBar${index + 1}", "id",
                 packageName))
         }
         countDownTimers = Array(timers.size) { index ->
             object : CountDownTimer(totalDuration.toLong(), updateInterval) {
                 override fun onTick(millisUntilFinished: Long) {
-                    val progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
-                    timers[index].progress = progress
+                    timers[index].progress = (millisUntilFinished.toFloat() / totalDuration * 100).toInt()
                 }
 
                 override fun onFinish() {
@@ -115,6 +196,8 @@ class GameScreen : AppCompatActivity() {
                         }
                         gameOver = true
                         gameOverDialog()
+                    } else {
+                        countDownTimers[index].cancel()
                     }
                 }
             }
@@ -245,9 +328,9 @@ class GameScreen : AppCompatActivity() {
         }
 
         for (i in 0..2) {
-            var randomNumber = (0..31).random()
+            var randomNumber = (0..24).random()
             while (visibleBtn.contains(randomNumber)) {
-                randomNumber = (0..31).random()
+                randomNumber = (0..24).random()
             }
             visibleBtn.add(randomNumber)
 
@@ -284,8 +367,8 @@ class GameScreen : AppCompatActivity() {
                 if (infoText.text.isNullOrEmpty()) {
                     infoText.append(buttons[id].text.toString())
                 } else if (infoText.text.toString() == resources.getString(R.string.status_incorrect) ||
-                        infoText.text.toString() == resources.getString(R.string.status_correct) ||
-                        infoText.text.toString() == resources.getString(R.string.status_empty)) {
+                    infoText.text.toString() == resources.getString(R.string.status_correct) ||
+                    infoText.text.toString() == resources.getString(R.string.status_empty)) {
                     infoText.text = buttons[id].text.toString()
                 } else {
                     when (intent.getStringExtra(getGameMode)) {
@@ -457,6 +540,7 @@ class GameScreen : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            .setCancelable(false)
             .show()
     }
 
